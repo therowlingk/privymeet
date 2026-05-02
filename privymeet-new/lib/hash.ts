@@ -1,9 +1,9 @@
+import SHA256 from "crypto-js/sha256";
+import Hex from "crypto-js/enc-hex";
+
 export async function sha256(input: string): Promise<string> {
   const normalized = input.trim().toLowerCase();
-  const data = new TextEncoder().encode(normalized);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  return SHA256(normalized).toString(Hex);
 }
 
 export async function hashMany(inputs: string[]): Promise<string[]> {
@@ -11,6 +11,5 @@ export async function hashMany(inputs: string[]): Promise<string[]> {
     .map((v) => v.trim())
     .filter(Boolean);
 
-  const hashed = await Promise.all(cleaned.map(sha256));
-  return hashed;
+  return Promise.all(cleaned.map(sha256));
 }
